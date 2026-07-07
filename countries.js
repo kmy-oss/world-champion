@@ -1,0 +1,101 @@
+// 世界の国データベース（世界チャンピオン）
+// c:国名 / cap:首都 / en:地図データ上の英語名(なければnull=マーカー表示) / cont:大陸
+// tier:難易度(1=小,2=中,3=高) / fam:名物・有名なもの / exp:主な輸出品
+// flag:国旗 / lon,lat:首都のおおよその経度・緯度 / size:面積カテゴリ(L/M/S)＝ズーム量に使用
+const COUNTRIES = [
+  // ===================== アジア =====================
+  { c:"日本", cap:"東京", en:"Japan", cont:"アジア", tier:1, fam:"寿司・富士山", exp:"自動車", flag:"🇯🇵", lon:139.7, lat:35.7, size:"M" },
+  { c:"中国", cap:"ペキン（北京）", en:"China", cont:"アジア", tier:1, fam:"万里の長城", exp:"電子機器", flag:"🇨🇳", lon:116.4, lat:39.9, size:"L" },
+  { c:"韓国", cap:"ソウル", en:"South Korea", cont:"アジア", tier:1, fam:"キムチ", exp:"半導体", flag:"🇰🇷", lon:127.0, lat:37.5, size:"M" },
+  { c:"インド", cap:"ニューデリー", en:"India", cont:"アジア", tier:1, fam:"タージ・マハル", exp:"ソフトウェア", flag:"🇮🇳", lon:77.2, lat:28.6, size:"L" },
+  { c:"タイ", cap:"バンコク", en:"Thailand", cont:"アジア", tier:2, fam:"トムヤムクン", exp:"米", flag:"🇹🇭", lon:100.5, lat:13.75, size:"M" },
+  { c:"ベトナム", cap:"ハノイ", en:"Vietnam", cont:"アジア", tier:2, fam:"フォー", exp:"コーヒー", flag:"🇻🇳", lon:105.85, lat:21.0, size:"M" },
+  { c:"インドネシア", cap:"ジャカルタ", en:"Indonesia", cont:"アジア", tier:2, fam:"バリ島", exp:"パーム油", flag:"🇮🇩", lon:106.8, lat:-6.2, size:"L" },
+  { c:"フィリピン", cap:"マニラ", en:"Philippines", cont:"アジア", tier:2, fam:"バナナ", exp:"電子機器", flag:"🇵🇭", lon:121.0, lat:14.6, size:"M" },
+  { c:"マレーシア", cap:"クアラルンプール", en:"Malaysia", cont:"アジア", tier:2, fam:"ペトロナスタワー", exp:"パーム油", flag:"🇲🇾", lon:101.7, lat:3.14, size:"M" },
+  { c:"サウジアラビア", cap:"リヤド", en:"Saudi Arabia", cont:"アジア", tier:2, fam:"メッカ巡礼", exp:"石油", flag:"🇸🇦", lon:46.7, lat:24.7, size:"L" },
+  { c:"トルコ", cap:"アンカラ", en:"Turkey", cont:"アジア", tier:2, fam:"バザール", exp:"繊維製品", flag:"🇹🇷", lon:32.85, lat:39.9, size:"M" },
+  { c:"モンゴル", cap:"ウランバートル", en:"Mongolia", cont:"アジア", tier:2, fam:"ゲル・遊牧", exp:"石炭", flag:"🇲🇳", lon:106.9, lat:47.9, size:"L" },
+  { c:"ネパール", cap:"カトマンズ", en:"Nepal", cont:"アジア", tier:3, fam:"エベレスト", exp:"カーペット", flag:"🇳🇵", lon:85.3, lat:27.7, size:"M" },
+  { c:"パキスタン", cap:"イスラマバード", en:"Pakistan", cont:"アジア", tier:3, fam:"インダス文明", exp:"繊維製品", flag:"🇵🇰", lon:73.0, lat:33.7, size:"M" },
+  { c:"イラン", cap:"テヘラン", en:"Iran", cont:"アジア", tier:3, fam:"ペルシャ絨毯", exp:"石油", flag:"🇮🇷", lon:51.4, lat:35.7, size:"L" },
+  { c:"イラク", cap:"バグダッド", en:"Iraq", cont:"アジア", tier:3, fam:"メソポタミア文明", exp:"石油", flag:"🇮🇶", lon:44.4, lat:33.3, size:"M" },
+  { c:"アラブ首長国連邦", cap:"アブダビ", en:"United Arab Emirates", cont:"アジア", tier:3, fam:"ドバイの高層ビル", exp:"石油", flag:"🇦🇪", lon:54.4, lat:24.5, size:"S" },
+  { c:"カンボジア", cap:"プノンペン", en:"Cambodia", cont:"アジア", tier:3, fam:"アンコール・ワット", exp:"衣料品", flag:"🇰🇭", lon:104.9, lat:11.6, size:"M" },
+
+  // ===================== ヨーロッパ =====================
+  { c:"イギリス", cap:"ロンドン", en:"United Kingdom", cont:"ヨーロッパ", tier:1, fam:"ビッグ・ベン", exp:"機械類", flag:"🇬🇧", lon:-0.13, lat:51.5, size:"M" },
+  { c:"フランス", cap:"パリ", en:"France", cont:"ヨーロッパ", tier:1, fam:"エッフェル塔", exp:"ワイン", flag:"🇫🇷", lon:2.35, lat:48.85, size:"M" },
+  { c:"ドイツ", cap:"ベルリン", en:"Germany", cont:"ヨーロッパ", tier:1, fam:"ソーセージ", exp:"自動車", flag:"🇩🇪", lon:13.4, lat:52.5, size:"M" },
+  { c:"イタリア", cap:"ローマ", en:"Italy", cont:"ヨーロッパ", tier:1, fam:"コロッセオ", exp:"ファッション", flag:"🇮🇹", lon:12.5, lat:41.9, size:"M" },
+  { c:"スペイン", cap:"マドリード", en:"Spain", cont:"ヨーロッパ", tier:1, fam:"サグラダ・ファミリア", exp:"オリーブ油", flag:"🇪🇸", lon:-3.7, lat:40.4, size:"M" },
+  { c:"ロシア", cap:"モスクワ", en:"Russia", cont:"ヨーロッパ", tier:1, fam:"赤の広場", exp:"天然ガス", flag:"🇷🇺", lon:37.6, lat:55.75, size:"L" },
+  { c:"オランダ", cap:"アムステルダム", en:"Netherlands", cont:"ヨーロッパ", tier:2, fam:"風車・チューリップ", exp:"切り花", flag:"🇳🇱", lon:4.9, lat:52.37, size:"S" },
+  { c:"スイス", cap:"ベルン", en:"Switzerland", cont:"ヨーロッパ", tier:2, fam:"アルプス・時計", exp:"精密機械", flag:"🇨🇭", lon:7.45, lat:46.95, size:"S" },
+  { c:"スウェーデン", cap:"ストックホルム", en:"Sweden", cont:"ヨーロッパ", tier:2, fam:"オーロラ・北欧家具", exp:"自動車", flag:"🇸🇪", lon:18.07, lat:59.33, size:"M" },
+  { c:"ノルウェー", cap:"オスロ", en:"Norway", cont:"ヨーロッパ", tier:2, fam:"フィヨルド", exp:"石油・魚", flag:"🇳🇴", lon:10.75, lat:59.9, size:"M" },
+  { c:"ギリシャ", cap:"アテネ", en:"Greece", cont:"ヨーロッパ", tier:2, fam:"パルテノン神殿", exp:"オリーブ油", flag:"🇬🇷", lon:23.7, lat:37.98, size:"M" },
+  { c:"ポルトガル", cap:"リスボン", en:"Portugal", cont:"ヨーロッパ", tier:2, fam:"ポートワイン", exp:"コルク", flag:"🇵🇹", lon:-9.14, lat:38.7, size:"S" },
+  { c:"ベルギー", cap:"ブリュッセル", en:"Belgium", cont:"ヨーロッパ", tier:2, fam:"チョコ・ワッフル", exp:"医薬品", flag:"🇧🇪", lon:4.35, lat:50.85, size:"S" },
+  { c:"オーストリア", cap:"ウィーン", en:"Austria", cont:"ヨーロッパ", tier:2, fam:"音楽の都", exp:"機械類", flag:"🇦🇹", lon:16.37, lat:48.2, size:"S" },
+  { c:"フィンランド", cap:"ヘルシンキ", en:"Finland", cont:"ヨーロッパ", tier:2, fam:"サウナ・ムーミン", exp:"紙・パルプ", flag:"🇫🇮", lon:24.94, lat:60.17, size:"M" },
+  { c:"ポーランド", cap:"ワルシャワ", en:"Poland", cont:"ヨーロッパ", tier:3, fam:"ショパン", exp:"機械類", flag:"🇵🇱", lon:21.0, lat:52.23, size:"M" },
+  { c:"ウクライナ", cap:"キーウ", en:"Ukraine", cont:"ヨーロッパ", tier:3, fam:"ひまわり畑", exp:"小麦", flag:"🇺🇦", lon:30.5, lat:50.45, size:"M" },
+  { c:"チェコ", cap:"プラハ", en:"Czechia", cont:"ヨーロッパ", tier:3, fam:"ビール", exp:"自動車", flag:"🇨🇿", lon:14.42, lat:50.09, size:"S" },
+  { c:"デンマーク", cap:"コペンハーゲン", en:"Denmark", cont:"ヨーロッパ", tier:3, fam:"人魚姫の像", exp:"豚肉", flag:"🇩🇰", lon:12.57, lat:55.68, size:"S" },
+  { c:"アイスランド", cap:"レイキャビク", en:"Iceland", cont:"ヨーロッパ", tier:3, fam:"オーロラ・温泉", exp:"魚", flag:"🇮🇸", lon:-21.9, lat:64.15, size:"M" },
+
+  // ===================== アフリカ =====================
+  { c:"エジプト", cap:"カイロ", en:"Egypt", cont:"アフリカ", tier:1, fam:"ピラミッド", exp:"石油", flag:"🇪🇬", lon:31.2, lat:30.05, size:"L" },
+  { c:"南アフリカ", cap:"プレトリア", en:"South Africa", cont:"アフリカ", tier:1, fam:"サバンナ・金", exp:"金・ダイヤ", flag:"🇿🇦", lon:28.2, lat:-25.75, size:"L" },
+  { c:"ケニア", cap:"ナイロビ", en:"Kenya", cont:"アフリカ", tier:2, fam:"サファリ", exp:"紅茶", flag:"🇰🇪", lon:36.8, lat:-1.29, size:"M" },
+  { c:"モロッコ", cap:"ラバト", en:"Morocco", cont:"アフリカ", tier:2, fam:"サハラ砂漠の玄関", exp:"リン鉱石", flag:"🇲🇦", lon:-6.84, lat:34.02, size:"M" },
+  { c:"ナイジェリア", cap:"アブジャ", en:"Nigeria", cont:"アフリカ", tier:2, fam:"アフリカ最大の人口", exp:"石油", flag:"🇳🇬", lon:7.5, lat:9.06, size:"M" },
+  { c:"エチオピア", cap:"アディスアベバ", en:"Ethiopia", cont:"アフリカ", tier:2, fam:"コーヒー発祥の地", exp:"コーヒー", flag:"🇪🇹", lon:38.7, lat:9.0, size:"L" },
+  { c:"ガーナ", cap:"アクラ", en:"Ghana", cont:"アフリカ", tier:2, fam:"カカオ", exp:"カカオ", flag:"🇬🇭", lon:-0.19, lat:5.6, size:"M" },
+  { c:"タンザニア", cap:"ドドマ", en:"Tanzania", cont:"アフリカ", tier:3, fam:"キリマンジャロ", exp:"金", flag:"🇹🇿", lon:35.75, lat:-6.17, size:"L" },
+  { c:"アルジェリア", cap:"アルジェ", en:"Algeria", cont:"アフリカ", tier:3, fam:"サハラ砂漠", exp:"天然ガス", flag:"🇩🇿", lon:3.06, lat:36.75, size:"L" },
+  { c:"チュニジア", cap:"チュニス", en:"Tunisia", cont:"アフリカ", tier:3, fam:"カルタゴ遺跡", exp:"オリーブ油", flag:"🇹🇳", lon:10.18, lat:36.8, size:"M" },
+  { c:"リビア", cap:"トリポリ", en:"Libya", cont:"アフリカ", tier:3, fam:"サハラ砂漠", exp:"石油", flag:"🇱🇾", lon:13.19, lat:32.9, size:"L" },
+  { c:"スーダン", cap:"ハルツーム", en:"Sudan", cont:"アフリカ", tier:3, fam:"ナイル川の合流点", exp:"ゴマ", flag:"🇸🇩", lon:32.5, lat:15.5, size:"L" },
+  { c:"マダガスカル", cap:"アンタナナリボ", en:"Madagascar", cont:"アフリカ", tier:3, fam:"キツネザル", exp:"バニラ", flag:"🇲🇬", lon:47.5, lat:-18.9, size:"M" },
+  { c:"セネガル", cap:"ダカール", en:"Senegal", cont:"アフリカ", tier:3, fam:"ダカール・ラリー", exp:"魚・落花生", flag:"🇸🇳", lon:-17.45, lat:14.7, size:"M" },
+  { c:"ジンバブエ", cap:"ハラレ", en:"Zimbabwe", cont:"アフリカ", tier:3, fam:"ビクトリアの滝", exp:"タバコ", flag:"🇿🇼", lon:31.05, lat:-17.83, size:"M" },
+
+  // ===================== 北アメリカ =====================
+  { c:"アメリカ", cap:"ワシントンD.C.", en:"United States of America", cont:"北アメリカ", tier:1, fam:"自由の女神", exp:"航空機", flag:"🇺🇸", lon:-77.04, lat:38.9, size:"L" },
+  { c:"カナダ", cap:"オタワ", en:"Canada", cont:"北アメリカ", tier:1, fam:"メープルシロップ", exp:"木材・石油", flag:"🇨🇦", lon:-75.7, lat:45.4, size:"L" },
+  { c:"メキシコ", cap:"メキシコシティ", en:"Mexico", cont:"北アメリカ", tier:1, fam:"タコス", exp:"自動車", flag:"🇲🇽", lon:-99.13, lat:19.43, size:"L" },
+  { c:"キューバ", cap:"ハバナ", en:"Cuba", cont:"北アメリカ", tier:2, fam:"葉巻", exp:"葉巻・砂糖", flag:"🇨🇺", lon:-82.38, lat:23.13, size:"S" },
+  { c:"ジャマイカ", cap:"キングストン", en:"Jamaica", cont:"北アメリカ", tier:2, fam:"レゲエ", exp:"アルミナ", flag:"🇯🇲", lon:-76.79, lat:17.99, size:"S" },
+  { c:"パナマ", cap:"パナマシティ", en:"Panama", cont:"北アメリカ", tier:2, fam:"パナマ運河", exp:"バナナ", flag:"🇵🇦", lon:-79.53, lat:8.98, size:"S" },
+  { c:"グアテマラ", cap:"グアテマラシティ", en:"Guatemala", cont:"北アメリカ", tier:2, fam:"マヤ文明", exp:"コーヒー", flag:"🇬🇹", lon:-90.5, lat:14.6, size:"M" },
+  { c:"コスタリカ", cap:"サンホセ", en:"Costa Rica", cont:"北アメリカ", tier:3, fam:"熱帯雨林", exp:"コーヒー・バナナ", flag:"🇨🇷", lon:-84.08, lat:9.93, size:"S" },
+  { c:"ホンジュラス", cap:"テグシガルパ", en:"Honduras", cont:"北アメリカ", tier:3, fam:"マヤ遺跡コパン", exp:"コーヒー", flag:"🇭🇳", lon:-87.2, lat:14.1, size:"M" },
+  { c:"ニカラグア", cap:"マナグア", en:"Nicaragua", cont:"北アメリカ", tier:3, fam:"火山と湖", exp:"コーヒー", flag:"🇳🇮", lon:-86.25, lat:12.14, size:"M" },
+  { c:"ドミニカ共和国", cap:"サントドミンゴ", en:"Dominican Rep.", cont:"北アメリカ", tier:3, fam:"カリブのリゾート", exp:"葉巻", flag:"🇩🇴", lon:-69.9, lat:18.47, size:"S" },
+  { c:"ハイチ", cap:"ポルトープランス", en:"Haiti", cont:"北アメリカ", tier:3, fam:"カリブ海の国", exp:"衣料品", flag:"🇭🇹", lon:-72.34, lat:18.54, size:"S" },
+
+  // ===================== 南アメリカ =====================
+  { c:"ブラジル", cap:"ブラジリア", en:"Brazil", cont:"南アメリカ", tier:1, fam:"サッカー・アマゾン", exp:"大豆・鉄鉱石", flag:"🇧🇷", lon:-47.9, lat:-15.8, size:"L" },
+  { c:"アルゼンチン", cap:"ブエノスアイレス", en:"Argentina", cont:"南アメリカ", tier:1, fam:"タンゴ・牛肉", exp:"大豆", flag:"🇦🇷", lon:-58.4, lat:-34.6, size:"L" },
+  { c:"ペルー", cap:"リマ", en:"Peru", cont:"南アメリカ", tier:2, fam:"マチュ・ピチュ", exp:"銅", flag:"🇵🇪", lon:-77.03, lat:-12.05, size:"L" },
+  { c:"チリ", cap:"サンティアゴ", en:"Chile", cont:"南アメリカ", tier:2, fam:"アンデス山脈", exp:"銅", flag:"🇨🇱", lon:-70.65, lat:-33.45, size:"L" },
+  { c:"コロンビア", cap:"ボゴタ", en:"Colombia", cont:"南アメリカ", tier:2, fam:"コーヒー", exp:"石油・コーヒー", flag:"🇨🇴", lon:-74.07, lat:4.7, size:"L" },
+  { c:"ベネズエラ", cap:"カラカス", en:"Venezuela", cont:"南アメリカ", tier:3, fam:"ギアナ高地", exp:"石油", flag:"🇻🇪", lon:-66.9, lat:10.5, size:"L" },
+  { c:"エクアドル", cap:"キト", en:"Ecuador", cont:"南アメリカ", tier:3, fam:"ガラパゴス諸島", exp:"バナナ・石油", flag:"🇪🇨", lon:-78.5, lat:-0.18, size:"M" },
+  { c:"ボリビア", cap:"スクレ", en:"Bolivia", cont:"南アメリカ", tier:3, fam:"ウユニ塩湖", exp:"天然ガス", flag:"🇧🇴", lon:-65.26, lat:-19.03, size:"L" },
+  { c:"ウルグアイ", cap:"モンテビデオ", en:"Uruguay", cont:"南アメリカ", tier:3, fam:"牛肉大国", exp:"牛肉・大豆", flag:"🇺🇾", lon:-56.19, lat:-34.9, size:"M" },
+  { c:"パラグアイ", cap:"アスンシオン", en:"Paraguay", cont:"南アメリカ", tier:3, fam:"イグアスの滝", exp:"大豆", flag:"🇵🇾", lon:-57.6, lat:-25.3, size:"M" },
+
+  // ===================== オセアニア =====================
+  { c:"オーストラリア", cap:"キャンベラ", en:"Australia", cont:"オセアニア", tier:1, fam:"コアラ・カンガルー", exp:"鉄鉱石・石炭", flag:"🇦🇺", lon:149.13, lat:-35.28, size:"L" },
+  { c:"ニュージーランド", cap:"ウェリントン", en:"New Zealand", cont:"オセアニア", tier:1, fam:"羊・キウイ", exp:"乳製品・羊毛", flag:"🇳🇿", lon:174.78, lat:-41.29, size:"M" },
+  { c:"フィジー", cap:"スバ", en:"Fiji", cont:"オセアニア", tier:2, fam:"南国リゾート", exp:"砂糖", flag:"🇫🇯", lon:178.44, lat:-18.14, size:"S" },
+  { c:"パプアニューギニア", cap:"ポートモレスビー", en:"Papua New Guinea", cont:"オセアニア", tier:2, fam:"800以上の言語", exp:"金・天然ガス", flag:"🇵🇬", lon:147.19, lat:-9.44, size:"M" },
+  { c:"サモア", cap:"アピア", en:null, cont:"オセアニア", tier:3, fam:"南太平洋の島国", exp:"魚・ココナッツ", flag:"🇼🇸", lon:-171.75, lat:-13.83, size:"S" },
+  { c:"トンガ", cap:"ヌクアロファ", en:null, cont:"オセアニア", tier:3, fam:"太平洋の王国", exp:"かぼちゃ・魚", flag:"🇹🇴", lon:-175.2, lat:-21.13, size:"S" },
+  { c:"ソロモン諸島", cap:"ホニアラ", en:"Solomon Is.", cont:"オセアニア", tier:3, fam:"第二次大戦の激戦地", exp:"木材", flag:"🇸🇧", lon:159.95, lat:-9.43, size:"S" },
+  { c:"バヌアツ", cap:"ポートビラ", en:"Vanuatu", cont:"オセアニア", tier:3, fam:"火山の島", exp:"コプラ", flag:"🇻🇺", lon:168.32, lat:-17.73, size:"S" }
+];
+if (typeof module !== "undefined") module.exports = { COUNTRIES };

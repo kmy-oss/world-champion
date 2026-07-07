@@ -1,0 +1,17 @@
+{
+  "name": "世界の国チャンピオン",
+  "short_name": "世界ｸｲｽﾞ",
+  "description": "小学生・中学生・高校生以上の3レベルで挑戦する世界の国の三択クイズ。首都は地図でズームして場所も学べる。名物・輸出品も出題。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#e7f3ff",
+  "theme_color": "#54a0ff",
+  "lang": "ja",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

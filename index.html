@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#54a0ff">
+<title>世界の国チャンピオン</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="世界の国チャンピオン">
+<style>
+  :root{
+    --bg1:#e7f3ff; --bg2:#eafbf0;
+    --pink:#ff6b6b; --pink-d:#ee5253;
+    --blue:#54a0ff; --blue-d:#2e86de;
+    --green:#26de81; --green-d:#20bf6b;
+    --yellow:#feca57; --yellow-d:#ff9f1a;
+    --purple:#a55eea; --purple-d:#8854d0;
+    --ink:#2f3a53; --card:#ffffff;
+    --ok:#26de81; --ng:#ff6b6b;
+    --ocean:#bfe3ff; --land:#e9e3d3; --land-brd:#c9c0a8; --hi:#ffd45e;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic UI","Segoe UI",system-ui,sans-serif;
+    color:var(--ink);
+    background:linear-gradient(160deg,var(--bg1),var(--bg2));
+    min-height:100dvh;
+    display:flex;justify-content:center;align-items:flex-start;
+    padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom);
+    overflow-x:hidden;
+  }
+  #app{width:100%;max-width:540px;padding:16px 4px 40px;}
+  .screen{animation:pop .35s cubic-bezier(.2,1.3,.4,1);}
+  @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97);}to{opacity:1;transform:none;}}
+  .hidden{display:none!important;}
+
+  /* Title */
+  .title-wrap{text-align:center;margin:18px 0 8px;}
+  .title{
+    font-size:clamp(28px,8.5vw,42px);font-weight:900;line-height:1.15;letter-spacing:.02em;
+    background:linear-gradient(90deg,var(--blue),var(--green-d),var(--purple));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 2px 0 rgba(0,0,0,.05);
+  }
+  .sub{margin-top:8px;font-size:14px;font-weight:700;color:#6f7fa0;}
+  .map-emoji{font-size:56px;display:block;margin:10px 0 2px;animation:bob 2.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-8px) rotate(4deg);}}
+  .section-h{font-size:15px;font-weight:800;color:#6f7fa0;margin:24px 6px 12px;text-align:center;}
+
+  /* Continent grid */
+  .cont-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .cont-btn{
+    border:none;cursor:pointer;font-family:inherit;color:#fff;border-radius:20px;
+    padding:18px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;
+    box-shadow:0 5px 0 rgba(0,0,0,.12),0 8px 16px rgba(0,0,0,.10);
+    transition:transform .08s, box-shadow .08s;
+  }
+  .cont-btn:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.12),0 5px 10px rgba(0,0,0,.10);}
+  .cont-btn .ce{font-size:38px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));}
+  .cont-btn .cn{font-size:17px;font-weight:900;}
+  .cont-btn .cc{font-size:11px;font-weight:800;opacity:.92;}
+  .cont-btn.wide{grid-column:1 / -1;flex-direction:row;justify-content:center;gap:12px;}
+  .cont-btn.wide .ce{font-size:32px;}
+  .cA{background:linear-gradient(135deg,#ff9f43,#ee5a24);}
+  .cB{background:linear-gradient(135deg,#54a0ff,#2e86de);}
+  .cC{background:linear-gradient(135deg,#26de81,#20bf6b);}
+  .cD{background:linear-gradient(135deg,#a55eea,#8854d0);}
+  .cE{background:linear-gradient(135deg,#fd79a8,#e84393);}
+  .cF{background:linear-gradient(135deg,#00cec9,#0984e3);}
+  .cAll{background:linear-gradient(135deg,#feca57,#ff9f1a);color:#7a5b00;}
+
+  /* Menu */
+  .back-row{margin:2px 2px 10px;}
+  .back-btn{border:none;background:#fff;color:var(--ink);font-family:inherit;font-weight:900;font-size:14px;
+    border-radius:12px;padding:8px 14px;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.08);}
+  .menu-title{text-align:center;font-size:22px;font-weight:900;margin:2px 0 2px;}
+  .menu-sub{text-align:center;font-size:13px;font-weight:800;color:#8091ad;margin-bottom:6px;}
+  .lv-pills{display:flex;gap:8px;justify-content:center;margin:14px 0 20px;}
+  .lv-pill{flex:1;border:3px solid #dfe8f5;background:#fff;color:#7286a8;font-family:inherit;font-weight:900;
+    font-size:15px;border-radius:14px;padding:12px 4px;cursor:pointer;transition:.12s;text-align:center;}
+  .lv-pill .pe{display:block;font-size:20px;margin-bottom:2px;}
+  .lv-pill.on{color:#fff;border-color:transparent;box-shadow:0 4px 0 rgba(0,0,0,.12);}
+  .lv-pill.on.el{background:linear-gradient(135deg,var(--green),var(--green-d));}
+  .lv-pill.on.jr{background:linear-gradient(135deg,var(--blue),var(--blue-d));}
+  .lv-pill.on.sr{background:linear-gradient(135deg,var(--purple),var(--purple-d));}
+
+  .mode-list{display:flex;flex-direction:column;gap:14px;}
+  .mode-btn{border:none;cursor:pointer;text-align:left;font-family:inherit;border-radius:22px;
+    padding:18px;color:#fff;display:flex;align-items:center;gap:16px;
+    box-shadow:0 6px 0 rgba(0,0,0,.12),0 10px 20px rgba(0,0,0,.12);transition:transform .08s,box-shadow .08s;}
+  .mode-btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.12),0 6px 12px rgba(0,0,0,.12);}
+  .mode-btn .emoji{font-size:38px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));}
+  .mode-btn .txt{flex:1;}
+  .mode-btn .mname{font-size:20px;font-weight:900;}
+  .mode-btn .mdesc{font-size:12.5px;font-weight:700;opacity:.95;margin-top:3px;}
+  .mode-btn.feature{padding:22px 18px;}
+  .mode-btn.feature .emoji{font-size:46px;}
+  .mode-btn.feature .mname{font-size:24px;}
+  .mode-btn .star{background:rgba(255,255,255,.28);border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900;white-space:nowrap;}
+  .mCap{background:linear-gradient(135deg,#54a0ff,#2e86de);}
+  .mFam{background:linear-gradient(135deg,#ff9f43,#ee5a24);}
+  .mExp{background:linear-gradient(135deg,#26de81,#20bf6b);}
+  .best-line{text-align:center;font-size:12px;font-weight:800;color:#93a1bd;margin-top:22px;line-height:1.9;}
+
+  /* Quiz top */
+  .qtop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:6px 2px 4px;}
+  .chip{font-size:12.5px;font-weight:900;padding:6px 12px;border-radius:999px;background:#fff;color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.08);}
+  .chip.lv{color:#fff;}
+  .score-chip{background:var(--yellow);color:#7a5b00;}
+  .progress{height:12px;background:#fff;border-radius:999px;overflow:hidden;margin:8px 2px 14px;box-shadow:inset 0 1px 3px rgba(0,0,0,.12);}
+  .bar{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .4s cubic-bezier(.2,1,.4,1);}
+
+  /* Map */
+  .mapwrap{background:var(--ocean);border-radius:22px;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.10);margin-bottom:12px;position:relative;}
+  #worldSvg{display:block;width:100%;height:auto;background:var(--ocean);}
+  #worldSvg .land{fill:var(--land);stroke:var(--land-brd);stroke-width:.5;vector-effect:non-scaling-stroke;}
+  #worldSvg .land.hi{fill:var(--hi);stroke:#e69b00;stroke-width:1.4;vector-effect:non-scaling-stroke;}
+  .map-cap{position:absolute;left:0;right:0;bottom:0;text-align:center;font-size:14px;font-weight:900;
+    color:#fff;background:linear-gradient(0deg,rgba(20,60,110,.72),rgba(20,60,110,0));padding:22px 10px 10px;pointer-events:none;}
+  .map-cap .flg{font-size:22px;}
+  .skip-btn{position:absolute;top:10px;right:10px;border:none;background:rgba(255,255,255,.9);color:var(--blue-d);
+    font-family:inherit;font-weight:900;font-size:12.5px;border-radius:999px;padding:7px 13px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+  #pinG text{font-family:inherit;}
+
+  .qcard{background:var(--card);border-radius:24px;padding:20px 18px;box-shadow:0 8px 22px rgba(0,0,0,.10);margin-bottom:16px;}
+  .qnum{font-size:13px;font-weight:900;color:var(--blue-d);}
+  .qtext{font-size:20px;font-weight:900;line-height:1.5;margin-top:8px;}
+  .qtext .big-flag{font-size:30px;}
+
+  .choices{display:flex;flex-direction:column;gap:12px;}
+  .choices.reveal{animation:pop .3s ease;}
+  .choice{border:3px solid #e5edf7;background:#fff;border-radius:18px;padding:15px 16px;font-size:17px;font-weight:800;
+    color:var(--ink);cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;
+    box-shadow:0 4px 0 #dde7f2;transition:transform .08s,box-shadow .08s,border-color .1s,background .1s;font-family:inherit;}
+  .choice:active{transform:translateY(3px);box-shadow:0 1px 0 #dde7f2;}
+  .choice .mark{width:30px;height:30px;border-radius:50%;flex:0 0 30px;background:#eef3fa;color:#7f92ad;font-weight:900;
+    display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .choice.correct{background:#e9fbf1;border-color:var(--ok);box-shadow:0 4px 0 #b7f0d0;}
+  .choice.correct .mark{background:var(--ok);color:#fff;}
+  .choice.wrong{background:#ffecec;border-color:var(--ng);box-shadow:0 4px 0 #ffc9c9;}
+  .choice.wrong .mark{background:var(--ng);color:#fff;}
+  .choice.dim{opacity:.55;}
+  .choice[disabled]{cursor:default;}
+
+  .feedback{text-align:center;font-weight:900;font-size:18px;min-height:26px;margin:2px 0 10px;line-height:1.5;}
+  .feedback.ok{color:var(--green-d);}
+  .feedback.ng{color:var(--pink-d);}
+
+  .next-btn,.big-btn{display:block;width:100%;border:none;cursor:pointer;font-family:inherit;border-radius:18px;padding:16px;
+    font-size:18px;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--blue),var(--blue-d));
+    box-shadow:0 5px 0 var(--blue-d);transition:transform .08s,box-shadow .08s;}
+  .next-btn:active,.big-btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--blue-d);}
+  .big-btn.green{background:linear-gradient(135deg,var(--green),var(--green-d));box-shadow:0 5px 0 var(--green-d);}
+
+  /* Result */
+  .result-card{background:var(--card);border-radius:26px;padding:26px 20px;text-align:center;box-shadow:0 10px 26px rgba(0,0,0,.12);}
+  .rank-emoji{font-size:74px;line-height:1;animation:bob 2.6s ease-in-out infinite;}
+  .rank-title{font-size:24px;font-weight:900;margin:8px 0 2px;}
+  .score-big{font-size:52px;font-weight:900;background:linear-gradient(90deg,var(--blue),var(--green-d));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .score-sub{font-size:14px;font-weight:800;color:#8091ad;margin-top:2px;}
+  .stat-row{display:flex;gap:10px;margin:18px 0;}
+  .stat{flex:1;background:#f2f7fc;border-radius:16px;padding:12px 4px;}
+  .stat .n{font-size:24px;font-weight:900;}
+  .stat .l{font-size:12px;font-weight:800;color:#8091ad;}
+  .newbest{display:inline-block;background:var(--yellow);color:#7a5b00;font-weight:900;font-size:13px;padding:6px 14px;border-radius:999px;margin-top:6px;}
+  .btn-row{display:flex;flex-direction:column;gap:12px;margin-top:20px;}
+
+  /* Leaderboard */
+  .lb{margin-top:20px;text-align:left;border-top:2px dashed #e3ebf4;padding-top:16px;}
+  .lb-title{font-size:15px;font-weight:900;text-align:center;color:#6f7fa0;margin-bottom:12px;}
+  .name-entry{display:flex;gap:8px;margin-bottom:12px;}
+  .name-entry input{flex:1;border:3px solid #e5edf7;border-radius:14px;padding:12px;font-size:18px;font-weight:800;font-family:inherit;text-align:center;letter-spacing:.35em;}
+  .name-entry input:focus{outline:none;border-color:var(--blue);}
+  .name-entry button{border:none;background:linear-gradient(135deg,var(--yellow),var(--yellow-d));color:#7a5b00;font-weight:900;font-family:inherit;border-radius:14px;padding:0 18px;font-size:15px;cursor:pointer;box-shadow:0 4px 0 var(--yellow-d);white-space:nowrap;}
+  .name-entry button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--yellow-d);}
+  .name-entry button:disabled{opacity:.5;box-shadow:none;}
+  ol.board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  ol.board li{display:flex;align-items:center;gap:10px;background:#f2f7fc;border-radius:14px;padding:10px 14px;font-weight:800;}
+  ol.board li .rk{width:26px;height:26px;flex:0 0 26px;border-radius:50%;background:#e3ebf4;color:#7f92ad;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;}
+  ol.board li.top1 .rk{background:#ffd54a;color:#7a5b00;}
+  ol.board li.top2 .rk{background:#d7dde6;color:#5a6472;}
+  ol.board li.top3 .rk{background:#e6b98a;color:#6b4a2a;}
+  ol.board li .nm{flex:1;letter-spacing:.15em;}
+  ol.board li .sc{color:var(--blue-d);font-weight:900;}
+  ol.board li.me{background:#fff5d6;border:2px solid var(--yellow-d);}
+  .you-line{text-align:center;font-weight:900;margin-top:12px;color:var(--ink);}
+  .lb-msg{text-align:center;font-size:12px;font-weight:700;color:#93a1bd;margin-top:10px;}
+  .install-hint{margin-top:18px;text-align:center;}
+  #installBtn{border:none;background:#fff;color:var(--ink);font-weight:900;font-family:inherit;border-radius:14px;padding:10px 18px;font-size:14px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.1);}
+  .footer{text-align:center;font-size:11px;color:#9fb0c9;margin-top:26px;font-weight:700;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- START : 大陸えらび -->
+  <section id="start" class="screen">
+    <div class="title-wrap">
+      <span class="map-emoji">🌍</span>
+      <div class="title">世界の国<br>チャンピオン</div>
+      <div class="sub">首都・名物・輸出品の三択クイズ！<br>地図でズームして場所もおぼえよう</div>
+    </div>
+    <div class="section-h">大陸をえらんでね</div>
+    <div class="cont-grid" id="contGrid"></div>
+    <div class="best-line" id="bestLine"></div>
+    <div class="install-hint"><button id="installBtn" class="hidden">📲 ホーム画面に追加</button></div>
+  </section>
+
+  <!-- MENU : モード & 難易度 -->
+  <section id="menu" class="screen hidden">
+    <div class="back-row"><button class="back-btn" id="menuBack">← 大陸をえらぶ</button></div>
+    <div class="menu-title" id="menuTitle">🌏 アジア</div>
+    <div class="menu-sub">難易度とクイズをえらんでスタート！</div>
+    <div class="lv-pills" id="lvPills"></div>
+    <div class="mode-list" id="modeList"></div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="screen hidden">
+    <div class="qtop">
+      <span class="chip lv" id="lvChip">🌱 小</span>
+      <span class="chip" id="qCount">1 / 10</span>
+      <span class="chip score-chip" id="scoreChip">0 点</span>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+
+    <!-- 首都モードの地図 -->
+    <div class="mapwrap hidden" id="mapWrap">
+      <svg id="worldSvg" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet">
+        <g id="worldG"></g>
+        <g id="pinG" class="hidden"></g>
+      </svg>
+      <button class="skip-btn hidden" id="skipBtn">▶ すぐ答える</button>
+      <div class="map-cap" id="mapCap">🌍 この国はどこかな？よ〜く見てね</div>
+    </div>
+
+    <div class="qcard">
+      <div class="qnum" id="qNum">第1問（10点）</div>
+      <div class="qtext" id="qText"></div>
+    </div>
+
+    <div class="choices hidden" id="choices"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn hidden" id="nextBtn">つぎの問題 →</button>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="screen hidden">
+    <div class="result-card">
+      <div class="rank-emoji" id="rankEmoji">🏆</div>
+      <div class="rank-title" id="rankTitle"></div>
+      <div class="score-big" id="finalScore">0</div>
+      <div class="score-sub" id="finalScoreSub"></div>
+      <div id="bestWrap"></div>
+      <div class="stat-row">
+        <div class="stat"><div class="n" id="stCorrect">0</div><div class="l">正解</div></div>
+        <div class="stat"><div class="n" id="stTotal">10</div><div class="l">問題数</div></div>
+        <div class="stat"><div class="n" id="stRate">0%</div><div class="l">正答率</div></div>
+      </div>
+      <div class="lb">
+        <div class="lb-title" id="lbTitle">🏆 オンラインランキング</div>
+        <div class="name-entry" id="nameEntry">
+          <input id="nameInput" maxlength="5" placeholder="なまえを5文字" autocomplete="off">
+          <button id="submitScore">登録</button>
+        </div>
+        <ol class="board" id="board"></ol>
+        <div class="you-line" id="youLine"></div>
+        <div class="lb-msg" id="lbMsg"></div>
+      </div>
+      <div class="btn-row">
+        <button class="big-btn" id="retryBtn">もう一度チャレンジ 🔁</button>
+        <button class="big-btn green" id="homeBtn">大陸をえらぶ 🏠</button>
+      </div>
+    </div>
+    <div class="footer">世界の国チャンピオン</div>
+  </section>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson-client/3.1.0/topojson-client.min.js"></script>
+<script src="countries.js"></script>
+<script>
+(function(){
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const N = 10;
+  const store = {
+    get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
+    set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+  };
+  function shuffle(a){ const r=a.slice(); for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];} return r; }
+  function uniq(a){ return [...new Set(a)]; }
+  function esc(x){ return String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+  // ---- 定義 ----
+  const CONTS = [
+    {key:"アジア",     e:"🌏", cls:"cA"},
+    {key:"ヨーロッパ", e:"🏰", cls:"cB"},
+    {key:"アフリカ",   e:"🦁", cls:"cC"},
+    {key:"北アメリカ", e:"🗽", cls:"cD"},
+    {key:"南アメリカ", e:"🦜", cls:"cE"},
+    {key:"オセアニア", e:"🐨", cls:"cF"}
+  ];
+  const LEVELS = {
+    el:{label:"小", full:"小学生", emoji:"🌱", points:10, max:1},
+    jr:{label:"中", full:"中学生", emoji:"🌿", points:15, max:2},
+    sr:{label:"高", full:"高校生", emoji:"🏆", points:20, max:3}
+  };
+  const MODES = {
+    cap:{label:"首都クイズ", emoji:"🗺️", cls:"mCap", desc:"地図でその国にズーム！場所もおぼえよう", feature:true},
+    fam:{label:"名物クイズ", emoji:"🍜", cls:"mFam", desc:"名物・有名なものから国あて"},
+    exp:{label:"輸出品クイズ", emoji:"📦", cls:"mExp", desc:"その国の主な輸出品はどれ？"}
+  };
+
+  let sel = { cont:null, level:"el" };
+  let state = null;
+  let timers = [];
+  function clearTimers(){ timers.forEach(t=>clearTimeout(t)); timers=[]; }
+  function later(fn,ms){ const t=setTimeout(fn,ms); timers.push(t); return t; }
+
+  // ================= 出題生成 =================
+  function poolFor(cont){ return cont==="ALL" ? COUNTRIES.slice() : COUNTRIES.filter(c=>c.cont===cont); }
+  function askableFor(pool, level){
+    const max = LEVELS[level].max;
+    let a = pool.filter(c=>c.tier<=max);
+    if(a.length < 6) a = pool.filter(c=>c.tier<=Math.min(3,max+1));
+    if(a.length < 4) a = pool.slice();
+    return a;
+  }
+  function pickDistractors(correct, candidates, n){
+    const pool = shuffle(uniq(candidates.filter(v=>v && v!==correct)));
+    return pool.slice(0,n);
+  }
+  function makeChoices(correct, distractors){
+    if(distractors.length<2) return null;
+    const ch = shuffle([correct, distractors[0], distractors[1]]);
+    return { choices:ch, answer:ch.indexOf(correct) };
+  }
+
+  function buildQuestions(cont, level, mode){
+    const pool = poolFor(cont);
+    const askable = askableFor(pool, level);
+    const out = [];
+    if(mode==="cap"){
+      const caps = pool.map(c=>c.cap);
+      askable.forEach(c=>{
+        const mk = makeChoices(c.cap, pickDistractors(c.cap, caps, 2));
+        if(mk) out.push({ mode:"cap", ctry:c, q:`${c.c} の首都はどこ？`, ...mk });
+      });
+    } else if(mode==="fam"){
+      const fams = pool.map(c=>c.fam), names = pool.map(c=>c.c);
+      askable.forEach(c=>{
+        const f = makeChoices(c.fam, pickDistractors(c.fam, fams, 2));
+        if(f) out.push({ mode:"fam", ctry:c, q:`${c.flag} ${c.c} で有名なものはどれ？`, ...f });
+        const r = makeChoices(c.c, pickDistractors(c.c, names, 2));
+        if(r) out.push({ mode:"fam", ctry:c, q:`「${c.fam}」で知られる国はどこ？`, ...r });
+      });
+    } else { // exp
+      const exps = pool.map(c=>c.exp);
+      askable.forEach(c=>{
+        const mk = makeChoices(c.exp, pickDistractors(c.exp, exps, 2));
+        if(mk) out.push({ mode:"exp", ctry:c, q:`${c.flag} ${c.c} の主な輸出品はどれ？`, ...mk });
+      });
+    }
+    return shuffle(out).slice(0, Math.min(N, out.length));
+  }
+
+  // ================= 画面遷移 =================
+  function show(id){
+    clearTimers();
+    ["start","menu","quiz","result"].forEach(x=>$(x).classList.add("hidden"));
+    const el=$(id); el.classList.remove("hidden");
+    el.classList.remove("screen"); void el.offsetWidth; el.classList.add("screen");
+  }
+
+  // ---- START ----
+  function renderStart(){
+    const g=$("contGrid"); g.innerHTML="";
+    CONTS.forEach(ct=>{
+      const n = COUNTRIES.filter(c=>c.cont===ct.key).length;
+      const b=document.createElement("button");
+      b.className="cont-btn "+ct.cls;
+      b.innerHTML=`<span class="ce">${ct.e}</span><span class="cn">${ct.key}</span><span class="cc">${n}か国</span>`;
+      b.onclick=()=>openMenu(ct.key);
+      g.appendChild(b);
+    });
+    const all=document.createElement("button");
+    all.className="cont-btn wide cAll";
+    all.innerHTML=`<span class="ce">🌍</span><span class="cn">ぜんぶの大陸でチャレンジ</span>`;
+    all.onclick=()=>openMenu("ALL");
+    g.appendChild(all);
+
+    // ベスト表示（大陸横断のトップ数件）
+    const bests=[];
+    ["cap","fam","exp"].forEach(m=>{
+      const b=store.get(`best_ALL_sr_${m}`,0);
+      if(b>0) bests.push(`${MODES[m].emoji}${MODES[m].label.replace("クイズ","")} ${b}点`);
+    });
+    $("bestLine").innerHTML = bests.length ? "🏅 ぜんぶ・高 ベスト<br>"+bests.join("　/　") : "🌏 まずはアジアの首都からチャレンジ！";
+  }
+
+  // ---- MENU ----
+  function openMenu(cont){
+    sel.cont = cont;
+    const label = cont==="ALL" ? "🌍 ぜんぶの大陸" : (CONTS.find(c=>c.key===cont).e+" "+cont);
+    $("menuTitle").textContent = label;
+    renderLvPills();
+    renderModes();
+    show("menu");
+  }
+  function renderLvPills(){
+    const box=$("lvPills"); box.innerHTML="";
+    Object.keys(LEVELS).forEach(k=>{
+      const L=LEVELS[k];
+      const b=document.createElement("button");
+      b.className="lv-pill "+k+(sel.level===k?" on":"");
+      b.innerHTML=`<span class="pe">${L.emoji}</span>${L.full}`;
+      b.onclick=()=>{ sel.level=k; renderLvPills(); renderModes(); };
+      box.appendChild(b);
+    });
+  }
+  function renderModes(){
+    const box=$("modeList"); box.innerHTML="";
+    Object.keys(MODES).forEach(mk=>{
+      const M=MODES[mk];
+      const best=store.get(`best_${sel.cont}_${sel.level}_${mk}`,0);
+      const b=document.createElement("button");
+      b.className="mode-btn "+M.cls+(M.feature?" feature":"");
+      b.innerHTML=`<span class="emoji">${M.emoji}</span>
+        <span class="txt"><span class="mname">${M.label}</span>
+        <span class="mdesc">${M.desc}</span></span>
+        ${M.feature?'<span class="star">★おすすめ</span>':(best?`<span class="star">ベスト${best}</span>`:'')}`;
+      b.onclick=()=>startQuiz(mk);
+      box.appendChild(b);
+    });
+  }
+
+  // ---- QUIZ ----
+  function startQuiz(mode){
+    const qs = buildQuestions(sel.cont, sel.level, mode);
+    if(!qs.length){ alert("問題を用意できませんでした"); return; }
+    state = { cont:sel.cont, level:sel.level, mode, qs, idx:0, score:0, correct:0, points:LEVELS[sel.level].points };
+    show("quiz");
+    const L=LEVELS[sel.level];
+    const chip=$("lvChip");
+    chip.textContent=`${L.emoji} ${L.full}`;
+    chip.className="chip lv "+sel.level;
+    chip.style.background = sel.level==="el"?"linear-gradient(135deg,#26de81,#20bf6b)":sel.level==="jr"?"linear-gradient(135deg,#54a0ff,#2e86de)":"linear-gradient(135deg,#a55eea,#8854d0)";
+    renderQuestion();
+  }
+
+  function renderQuestion(){
+    clearTimers();
+    const s=state, item=s.qs[s.idx];
+    $("qCount").textContent=`${s.idx+1} / ${s.qs.length}`;
+    $("scoreChip").textContent=`${s.score} 点`;
+    $("bar").style.width=((s.idx)/s.qs.length*100)+"%";
+    $("qNum").textContent=`第${s.idx+1}問（${s.points}点）`;
+    $("feedback").textContent=""; $("feedback").className="feedback";
+    $("nextBtn").classList.add("hidden");
+    $("nextBtn").textContent=(s.idx===s.qs.length-1)?"結果を見る 🎉":"つぎの問題 →";
+    hidePin();
+
+    if(item.mode==="cap" && mapReady){
+      // 地図モード：ズーム演出
+      $("mapWrap").classList.remove("hidden");
+      $("choices").classList.add("hidden");
+      $("qText").innerHTML = `<span style="color:#8091ad">地図をよ〜く見てね 🔍</span>`;
+      $("mapCap").innerHTML = `🌍 この国はどこかな？`;
+      $("skipBtn").classList.remove("hidden");
+      resetMapView();
+      highlight(item.ctry);
+      renderChoices(item, true); // 作るが隠しておく
+      $("choices").classList.add("hidden");
+      let revealed=false;
+      const reveal=()=>{
+        if(revealed) return; revealed=true;
+        $("skipBtn").classList.add("hidden");
+        $("qText").innerHTML = `<span class="big-flag">${item.ctry.flag}</span> <b>${item.ctry.c}</b> の首都はどこ？`;
+        $("mapCap").innerHTML = `<span class="flg">${item.ctry.flag}</span> ${item.ctry.c}`;
+        const box=$("choices"); box.classList.remove("hidden"); box.classList.remove("reveal"); void box.offsetWidth; box.classList.add("reveal");
+        window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+      };
+      later(()=>zoomTo(item.ctry, 1900), 450);
+      later(reveal, 450+1900+150);
+      $("skipBtn").onclick=()=>{ clearTimers(); zoomTo(item.ctry, 500); reveal(); };
+    } else {
+      // カードモード（名物・輸出）
+      $("mapWrap").classList.add("hidden");
+      $("skipBtn").classList.add("hidden");
+      $("qText").innerHTML = item.q;
+      renderChoices(item, false);
+      $("choices").classList.remove("hidden");
+    }
+  }
+
+  function renderChoices(item, hide){
+    const box=$("choices"); box.innerHTML="";
+    if(hide) box.classList.add("hidden");
+    const letters=["A","B","C","D"];
+    item.choices.forEach((opt,i)=>{
+      const b=document.createElement("button");
+      b.className="choice";
+      b.innerHTML=`<span class="mark">${letters[i]}</span><span>${esc(opt)}</span>`;
+      b.onclick=()=>answer(i,b);
+      box.appendChild(b);
+    });
+  }
+
+  function answer(i){
+    const s=state, item=s.qs[s.idx];
+    const buttons=[...document.querySelectorAll("#choices .choice")];
+    buttons.forEach((b,bi)=>{
+      b.disabled=true;
+      if(bi===item.answer) b.classList.add("correct");
+      else if(bi===i) b.classList.add("wrong");
+      else b.classList.add("dim");
+    });
+    const fb=$("feedback"), correctText=item.choices[item.answer];
+    if(i===item.answer){
+      s.score+=s.points; s.correct++;
+      fb.textContent=`⭕️ せいかい！ +${s.points}点`;
+      fb.className="feedback ok";
+    }else{
+      fb.textContent=`❌ ざんねん… 正解は「${correctText}」`;
+      fb.className="feedback ng";
+    }
+    if(item.mode==="cap" && mapReady) showPin(item.ctry);
+    $("scoreChip").textContent=`${s.score} 点`;
+    $("bar").style.width=((s.idx+1)/s.qs.length*100)+"%";
+    $("nextBtn").classList.remove("hidden");
+  }
+
+  function next(){
+    const s=state;
+    if(s.idx<s.qs.length-1){ s.idx++; renderQuestion(); window.scrollTo({top:0,behavior:"smooth"}); }
+    else showResult();
+  }
+
+  // ---- RESULT ----
+  function showResult(){
+    const s=state;
+    const max=s.points*s.qs.length;
+    const rate=Math.round(s.correct/s.qs.length*100);
+    const bestKey=`best_${s.cont}_${s.level}_${s.mode}`;
+    const prev=store.get(bestKey,0);
+    const isBest=s.score>prev;
+    if(isBest) store.set(bestKey,s.score);
+    let emoji,title;
+    if(rate===100){emoji="👑";title="パーフェクト！ 世界マスター";}
+    else if(rate>=80){emoji="🏆";title="すごい！ チャンピオン級";}
+    else if(rate>=60){emoji="🥈";title="いいね！ もう少しで達人";}
+    else if(rate>=40){emoji="🥉";title="その調子！ 練習あるのみ";}
+    else {emoji="🌱";title="スタート地点！ ここから伸びる";}
+    $("rankEmoji").textContent=emoji;
+    $("rankTitle").textContent=title;
+    $("finalScore").textContent=s.score;
+    const contLabel = s.cont==="ALL"?"ぜんぶ":s.cont;
+    $("finalScoreSub").textContent=`／ ${max}点（${contLabel}・${LEVELS[s.level].full}・${MODES[s.mode].label}）`;
+    $("stCorrect").textContent=s.correct;
+    $("stTotal").textContent=s.qs.length;
+    $("stRate").textContent=rate+"%";
+    $("bestWrap").innerHTML=isBest?`<div class="newbest">🎉 自己ベスト更新！</div>`:`<div class="newbest" style="background:#eef1f5;color:#8091ad">ベスト ${prev}点</div>`;
+
+    // オンラインランキング初期化
+    $("lbTitle").textContent=`🏆 ランキング（${LEVELS[s.level].full}・${MODES[s.mode].label}）`;
+    $("nameEntry").classList.remove("hidden");
+    $("youLine").textContent="";
+    $("nameInput").value=store.get(nameKey,"")||"";
+    submitting=false; $("submitScore").disabled=false;
+    loadBoard(boardId(s));
+
+    show("result");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  // ================= オンラインランキング =================
+  const API="/api/scores";
+  const nameKey="playerName";
+  let submitting=false;
+  function boardId(s){ return `${s.level}_${s.mode}`; }  // 例: el_cap（レベル×モード別）
+  async function fetchBoard(board){
+    const r=await fetch(`${API}?level=${encodeURIComponent(board)}`,{cache:"no-store"});
+    if(!r.ok) throw new Error("fetch"); return r.json();
+  }
+  async function postScore(board,name,score){
+    const r=await fetch(API,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({level:board,name,score})});
+    if(!r.ok) throw new Error("post"); return r.json();
+  }
+  function renderBoard(top,meName,meScore){
+    const ol=$("board"); ol.innerHTML="";
+    if(!top||!top.length){ ol.innerHTML=`<li><span class="nm" style="color:#93a1bd;font-weight:700">まだ記録がありません。1位をねらおう！</span></li>`; return; }
+    const cls=["top1","top2","top3"];
+    top.forEach((e,i)=>{
+      const li=document.createElement("li");
+      const isMe=meName!=null && e.name===meName && e.score===meScore;
+      li.className=(i<3?cls[i]:"")+(isMe?" me":"");
+      li.innerHTML=`<span class="rk">${i+1}</span><span class="nm">${esc(e.name)}</span><span class="sc">${e.score}点</span>`;
+      ol.appendChild(li);
+    });
+  }
+  async function loadBoard(board){
+    $("lbMsg").textContent="読み込み中…";
+    try{ const data=await fetchBoard(board); renderBoard(data.top); $("lbMsg").textContent=""; }
+    catch(e){ $("board").innerHTML=""; $("lbMsg").textContent="ランキングに接続できませんでした（オフライン、または未公開）。"; }
+  }
+  async function submitHandler(){
+    if(submitting||!state) return;
+    const name=($("nameInput").value||"").trim();
+    if(!name){ $("lbMsg").textContent="なまえを入力してね（1〜5文字）"; $("nameInput").focus(); return; }
+    submitting=true; $("submitScore").disabled=true; $("lbMsg").textContent="登録中…";
+    try{
+      store.set(nameKey,name);
+      const data=await postScore(boardId(state),name,state.score);
+      const myName=(data.you&&data.you.name)||name;
+      renderBoard(data.top,myName,state.score);
+      $("nameEntry").classList.add("hidden");
+      if(data.rank){ $("youLine").textContent=`あなたは ${data.total}人中 ${data.rank}位！`; }
+      else { $("youLine").textContent=`惜しい！ トップ${data.top.length}入りならず（${myName} ${state.score}点）`; }
+      $("lbMsg").textContent="";
+    }catch(e){ $("lbMsg").textContent="登録に失敗しました。通信環境をご確認ください。"; }
+    finally{ submitting=false; $("submitScore").disabled=false; }
+  }
+
+  // ================= 世界地図（D3） =================
+  let mapReady=false, projection=null, worldG=null, featByName={};
+  const MW=960, MH=500, CX=MW/2, CY=MH/2;
+
+  async function initMap(){
+    if(typeof d3==="undefined" || typeof topojson==="undefined") return;
+    try{
+      const topo = await d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json");
+      const feats = topojson.feature(topo, topo.objects.countries).features;
+      projection = d3.geoNaturalEarth1().fitExtent([[6,6],[MW-6,MH-6]], {type:"Sphere"});
+      const path = d3.geoPath(projection);
+      worldG = d3.select("#worldG");
+      worldG.selectAll("path").data(feats).enter().append("path")
+        .attr("d", path).attr("class","land")
+        .attr("data-name", d=>d.properties.name);
+      feats.forEach(f=>{ featByName[f.properties.name]=true; });
+      mapReady=true;
+    }catch(e){ mapReady=false; /* オフライン時はカード表示にフォールバック */ }
+  }
+
+  function resetMapView(){
+    if(!worldG) return;
+    worldG.interrupt().attr("transform","translate(0,0) scale(1)");
+  }
+  function highlight(ctry){
+    if(!worldG) return;
+    worldG.selectAll("path.land").classed("hi",false);
+    if(ctry.en && featByName[ctry.en]){
+      const sel=worldG.selectAll("path.land").filter(function(){ return this.getAttribute("data-name")===ctry.en; });
+      sel.classed("hi",true).raise();
+    }
+  }
+  function zoomTo(ctry, dur){
+    if(!worldG || !projection) return;
+    const p=projection([ctry.lon, ctry.lat]);
+    const k = ctry.size==="L"?2.6 : ctry.size==="M"?4.6 : 7.5;
+    const t=`translate(${CX},${CY}) scale(${k}) translate(${-p[0]},${-p[1]})`;
+    worldG.interrupt().transition().duration(dur).ease(d3.easeCubicInOut).attr("transform",t);
+  }
+  function showPin(ctry){
+    if(typeof d3==="undefined") return;
+    const g=d3.select("#pinG");
+    g.selectAll("*").remove();
+    g.attr("transform",`translate(${CX},${CY})`).classed("hidden",false);
+    g.append("circle").attr("r",7).attr("fill","#ee5253").attr("stroke","#fff").attr("stroke-width",2.5);
+    g.append("circle").attr("r",2.5).attr("fill","#fff");
+    const label=g.append("g").attr("transform","translate(0,-16)");
+    const txt=`📍 ${ctry.cap}`;
+    const w=txt.length*13+16;
+    label.append("rect").attr("x",-w/2).attr("y",-20).attr("width",w).attr("height",24).attr("rx",12).attr("fill","#2f3a53").attr("opacity",.92);
+    label.append("text").attr("text-anchor","middle").attr("y",-3).attr("fill","#fff").attr("font-size",14).attr("font-weight",900).text(txt);
+  }
+  function hidePin(){ if(typeof d3==="undefined") return; const g=d3.select("#pinG"); if(g.node()){ g.selectAll("*").remove(); g.classed("hidden",true);} }
+
+  // ---- events ----
+  $("nextBtn").onclick=next;
+  $("retryBtn").onclick=()=>startQuiz(state.mode);
+  $("homeBtn").onclick=()=>{ renderStart(); show("start"); };
+  $("menuBack").onclick=()=>{ renderStart(); show("start"); };
+  $("submitScore").onclick=submitHandler;
+  $("nameInput").addEventListener("keydown",e=>{ if(e.key==="Enter") submitHandler(); });
+
+  // ---- PWA インストール ----
+  let deferredPrompt=null;
+  window.addEventListener("beforeinstallprompt",e=>{
+    e.preventDefault(); deferredPrompt=e;
+    const b=$("installBtn"); b.classList.remove("hidden");
+    b.onclick=async()=>{ b.classList.add("hidden"); deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; };
+  });
+  if("serviceWorker" in navigator){
+    window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+  }
+
+  renderStart();
+  initMap();
+})();
+</script>
+</body>
+</html>
