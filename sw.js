@@ -1,5 +1,5 @@
 // 世界の国チャンピオン Service Worker
-const CACHE = "world-champ-v1";
+const CACHE = "world-champ-v2";
 const ASSETS = [
   "./",
   "./index.html",

@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#54a0ff">
-<title>世界の国チャンピオン</title>
+<title>EarthWISE 世界の国チャンピオン</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="世界の国チャンピオン">
+<meta name="apple-mobile-web-app-title" content="EarthWISE 世界">
 <style>
   :root{
     --bg1:#e7f3ff; --bg2:#eafbf0;
@@ -40,6 +40,9 @@
 
   /* Title */
   .title-wrap{text-align:center;margin:18px 0 8px;}
+  .brand{display:inline-block;font-weight:900;font-size:17px;letter-spacing:.04em;color:var(--blue-d);
+    background:#fff;padding:6px 16px;border-radius:999px;box-shadow:0 3px 10px rgba(0,0,0,.08);margin-bottom:4px;}
+  .brand-jp{font-size:11px;font-weight:800;color:#8091ad;letter-spacing:.02em;}
   .title{
     font-size:clamp(28px,8.5vw,42px);font-weight:900;line-height:1.15;letter-spacing:.02em;
     background:linear-gradient(90deg,var(--blue),var(--green-d),var(--purple));
@@ -200,6 +203,7 @@
   <!-- START : 大陸えらび -->
   <section id="start" class="screen">
     <div class="title-wrap">
+      <div class="brand">🌏 EarthWISE <span class="brand-jp">アースワイズ</span></div>
       <span class="map-emoji">🌍</span>
       <div class="title">世界の国<br>チャンピオン</div>
       <div class="sub">首都・名物・輸出品の三択クイズ！<br>地図でズームして場所もおぼえよう</div>
@@ -276,7 +280,7 @@
         <button class="big-btn green" id="homeBtn">大陸をえらぶ 🏠</button>
       </div>
     </div>
-    <div class="footer">世界の国チャンピオン</div>
+    <div class="footer">EarthWISE 世界の国チャンピオン</div>
   </section>
 
 </div>

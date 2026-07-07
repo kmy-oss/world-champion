@@ -1,6 +1,6 @@
 {
-  "name": "世界の国チャンピオン",
-  "short_name": "世界ｸｲｽﾞ",
+  "name": "EarthWISE 世界の国チャンピオン",
+  "short_name": "EW世界ｸｲｽﾞ",
   "description": "小学生・中学生・高校生以上の3レベルで挑戦する世界の国の三択クイズ。首都は地図でズームして場所も学べる。名物・輸出品も出題。",
   "start_url": "./index.html",
   "scope": "./",

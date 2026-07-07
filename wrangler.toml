@@ -2,7 +2,6 @@ name = "world-champion"
 compatibility_date = "2025-06-01"
 pages_build_output_dir = "."
 
-# 下の id は「wrangler kv namespace create SCORES」で出てきたIDに置き換える
 [[kv_namespaces]]
 binding = "SCORES"
 id = "ad929ade3247411bae785931bc89e21f"
