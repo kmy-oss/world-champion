@@ -285,8 +285,8 @@
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson-client/3.1.0/topojson-client.min.js"></script>
+<script src="vendor/d3.min.js"></script>
+<script src="vendor/topojson-client.min.js"></script>
 <script src="countries.js"></script>
 <script>
 (function(){
@@ -357,12 +357,21 @@
         if(mk) out.push({ mode:"cap", ctry:c, q:`${c.c} の首都はどこ？`, ...mk });
       });
     } else if(mode==="fam"){
-      const fams = pool.map(c=>c.fam), names = pool.map(c=>c.c);
+      const names = pool.map(c=>c.c);
+      const famCount = {};
+      pool.forEach(c=>c.fam.forEach(f=>{ famCount[f]=(famCount[f]||0)+1; }));
       askable.forEach(c=>{
-        const f = makeChoices(c.fam, pickDistractors(c.fam, fams, 2));
-        if(f) out.push({ mode:"fam", ctry:c, q:`${c.flag} ${c.c} で有名なものはどれ？`, ...f });
-        const r = makeChoices(c.c, pickDistractors(c.c, names, 2));
-        if(r) out.push({ mode:"fam", ctry:c, q:`「${c.fam}」で知られる国はどこ？`, ...r });
+        c.fam.forEach(item=>{
+          // 順引き：○○で有名なものはどれ？（自国の名物は誤答に混ぜない）
+          const cand = pool.filter(x=>x!==c).flatMap(x=>x.fam).filter(f=>!c.fam.includes(f));
+          const f = makeChoices(item, pickDistractors(item, cand, 2));
+          if(f) out.push({ mode:"fam", ctry:c, q:`${c.flag} ${c.c} で有名なものはどれ？`, ...f });
+          // 逆引き：世界で1か国だけの名物のみ（あいまい排除）
+          if(famCount[item]===1){
+            const r = makeChoices(c.c, pickDistractors(c.c, names, 2));
+            if(r) out.push({ mode:"fam", ctry:c, q:`「${item}」で知られる国はどこ？`, ...r });
+          }
+        });
       });
     } else { // exp
       const exps = pool.map(c=>c.exp);
@@ -469,6 +478,17 @@
     $("nextBtn").classList.add("hidden");
     $("nextBtn").textContent=(s.idx===s.qs.length-1)?"結果を見る 🎉":"つぎの問題 →";
     hidePin();
+
+    if(item.mode==="cap" && !mapReady && !mapFailed){
+      // 地図の読み込み待ち（読み込めたら自動で再表示）
+      $("mapWrap").classList.remove("hidden");
+      $("choices").classList.add("hidden");
+      $("skipBtn").classList.add("hidden");
+      $("qText").innerHTML = `<span style="color:#8091ad">地図を読み込み中… 🌍</span>`;
+      $("mapCap").innerHTML = `地図を読み込み中…`;
+      pendingMapRender = true;
+      return;
+    }
 
     if(item.mode==="cap" && mapReady){
       // 地図モード：ズーム演出
@@ -632,13 +652,13 @@
   }
 
   // ================= 世界地図（D3） =================
-  let mapReady=false, projection=null, worldG=null, featByName={};
+  let mapReady=false, mapFailed=false, pendingMapRender=false, projection=null, worldG=null, featByName={};
   const MW=960, MH=500, CX=MW/2, CY=MH/2;
 
   async function initMap(){
-    if(typeof d3==="undefined" || typeof topojson==="undefined") return;
+    if(typeof d3==="undefined" || typeof topojson==="undefined"){ mapFailed=true; flushPending(); return; }
     try{
-      const topo = await d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json");
+      const topo = window.__WORLD_TOPO || await d3.json("countries-110m.json");
       const feats = topojson.feature(topo, topo.objects.countries).features;
       projection = d3.geoNaturalEarth1().fitExtent([[6,6],[MW-6,MH-6]], {type:"Sphere"});
       const path = d3.geoPath(projection);
@@ -648,7 +668,11 @@
         .attr("data-name", d=>d.properties.name);
       feats.forEach(f=>{ featByName[f.properties.name]=true; });
       mapReady=true;
-    }catch(e){ mapReady=false; /* オフライン時はカード表示にフォールバック */ }
+      flushPending();
+    }catch(e){ mapFailed=true; flushPending(); }
+  }
+  function flushPending(){
+    if(pendingMapRender){ pendingMapRender=false; renderQuestion(); }
   }
 
   function resetMapView(){

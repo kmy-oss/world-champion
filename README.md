@@ -17,11 +17,13 @@ wrangler.toml              Cloudflare Pages 設定
 
 ## 世界地図について
 
-首都クイズの地図は、表示時に以下をインターネットから読み込みます（オンライン必須）。
-- D3.js / topojson-client（cdnjs）
-- 世界地図データ world-atlas（jsdelivr）
+首都クイズの地図は、必要なファイルをすべてサイトに同梱しているため、
+外部CDNに依存せず・オフラインでも動作します。
+- `vendor/d3.min.js` … 地図描画ライブラリ
+- `vendor/topojson-client.min.js` … 地図データ変換
+- `countries-110m.json` … 世界地図データ（Natural Earth / world-atlas）
 
-オフライン時やCDNに接続できない場合は、地図なしのカード形式に自動で切り替わります。
+万一これらが読み込めない場合のみ、地図なしのカード形式に自動で切り替わります。
 
 ## デプロイ手順（Cloudflare Pages）
 

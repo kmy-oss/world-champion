@@ -1,9 +1,12 @@
 // 世界の国チャンピオン Service Worker
-const CACHE = "world-champ-v2";
+const CACHE = "world-champ-v3";
 const ASSETS = [
   "./",
   "./index.html",
   "./countries.js",
+  "./countries-110m.json",
+  "./vendor/d3.min.js",
+  "./vendor/topojson-client.min.js",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
